@@ -1,8 +1,13 @@
 package edu.uncc.hw07.models;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+
+/*
+ * Homework 07
+ * Forum.java
+ * Authors: 1) Sudhanshu Dalvi, 2) Pradip Nemane
+ * */
 
 public class Forum implements Serializable {
     public String title;

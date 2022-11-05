@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 
 /*
- * In Class 11
+ * Homework 07
  * MyAlertDialog.java
  * Authors: 1) Sudhanshu Dalvi, 2) Pradip Nemane
  * */

@@ -1,6 +1,6 @@
 package edu.uncc.hw07;
 
-import android.content.Context;
+import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -30,39 +31,30 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import edu.uncc.hw07.adaptors.CommentRecyclerViewAdapter;
-import edu.uncc.hw07.adaptors.ForumRecyclerViewAdapter;
 import edu.uncc.hw07.databinding.FragmentForumBinding;
-import edu.uncc.hw07.databinding.FragmentForumsBinding;
 import edu.uncc.hw07.models.Comment;
 import edu.uncc.hw07.models.Forum;
 
+/*
+ * Homework 07
+ * ForumFragment.java
+ * Authors: 1) Sudhanshu Dalvi, 2) Pradip Nemane
+ * */
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ForumFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ForumFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM = "ARG_PARAM";
 
-    ArrayList<Comment> mComments = new ArrayList<>();
-    ForumListener mListener;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    CommentRecyclerViewAdapter adapter;
-    FragmentForumBinding binding;
-    // TODO: Rename and change types of parameters
     private Forum mForum;
+    FragmentForumBinding binding;
+    CommentRecyclerViewAdapter adapter;
+    ArrayList<Comment> mComments = new ArrayList<>();
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public ForumFragment() {
         // Required empty public constructor
     }
 
-
-    // TODO: Rename and change types and number of parameters
     public static ForumFragment newInstance(Forum forum) {
         ForumFragment fragment = new ForumFragment();
         Bundle args = new Bundle();
@@ -80,12 +72,20 @@ public class ForumFragment extends Fragment {
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        binding = FragmentForumBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("Forums");
 
         binding.recyclerView.setHasFixedSize(true);
-        adapter = new CommentRecyclerViewAdapter(getContext(), mComments, mListener, mForum);
+        adapter = new CommentRecyclerViewAdapter(getContext(), mComments, mForum);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerView.setAdapter(adapter);
         binding.textViewForumTitle.setText(mForum.title);
@@ -121,7 +121,6 @@ public class ForumFragment extends Fragment {
                 if (comment.isEmpty()) {
                     MyAlertDialog.show(getContext(), "Error", "Please enter all the fields");
                 } else {
-
                     HashMap<String, Object> map = new HashMap<>();
                     String commentId = UUID.randomUUID().toString();
                     map.put("commentId", commentId);
@@ -139,8 +138,15 @@ public class ForumFragment extends Fragment {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-
-                                        //mListener.closeCreateForumFragment();
+                                        binding.editTextComment.setText("");
+                                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                                        //Find the currently focused view, so we can grab the correct window token from it.
+                                        View view = getActivity().getCurrentFocus();
+                                        //If no view currently has focus, create a new one, just so we can grab a window token from it
+                                        if (view == null) {
+                                            view = new View(getActivity());
+                                        }
+                                        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                                     } else {
                                         MyAlertDialog.show(getContext(), "Error", task.getException().getMessage());
                                     }
@@ -151,22 +157,4 @@ public class ForumFragment extends Fragment {
         });
     }
 
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        binding = FragmentForumBinding.inflate(inflater, container, false);
-        return binding.getRoot();
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        mListener = (ForumListener) context;
-    }
-
-    public interface ForumListener {
-        void gotoForumsFragment(Forum forum);
-    }
 }

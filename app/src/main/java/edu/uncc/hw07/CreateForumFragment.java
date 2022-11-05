@@ -26,41 +26,33 @@ import java.util.UUID;
 
 import edu.uncc.hw07.databinding.FragmentCreateForumBinding;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CreateForumFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class CreateForumFragment extends Fragment {
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+/*
+ * Homework 07
+ * CreateForumFragment.java
+ * Authors: 1) Sudhanshu Dalvi, 2) Pradip Nemane
+ * */
 
-    FragmentCreateForumBinding binding;
+public class CreateForumFragment extends Fragment {
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+
     CreateForumListener mListener;
+    FragmentCreateForumBinding binding;
 
     public CreateForumFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CreateForumFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static CreateForumFragment newInstance(String param1, String param2) {
-        CreateForumFragment fragment = new CreateForumFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        binding = FragmentCreateForumBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
@@ -85,7 +77,6 @@ public class CreateForumFragment extends Fragment {
                 if (forumTitle.isEmpty() || forumDesc.isEmpty()) {
                     MyAlertDialog.show(getContext(), "Error", "Please enter all the fields");
                 } else {
-
                     HashMap<String, Object> map = new HashMap<>();
                     String forumId = UUID.randomUUID().toString();
                     map.put("title", forumTitle);
@@ -114,13 +105,6 @@ public class CreateForumFragment extends Fragment {
             }
         });
 
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        binding = FragmentCreateForumBinding.inflate(inflater, container, false);
-        return binding.getRoot();
     }
 
     @Override

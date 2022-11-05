@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,33 +16,28 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import edu.uncc.hw07.ForumFragment;
-import edu.uncc.hw07.ForumsFragment;
 import edu.uncc.hw07.MyAlertDialog;
-import edu.uncc.hw07.R;
 import edu.uncc.hw07.databinding.CommentRowItemBinding;
-import edu.uncc.hw07.databinding.ForumRowItemBinding;
 import edu.uncc.hw07.models.Comment;
 import edu.uncc.hw07.models.Forum;
+
 /*
- * In Class 11
- * RecyclerViewAdapter.java
+ * Homework 07
+ * CommentRecyclerViewAdapter.java
  * Authors: 1) Sudhanshu Dalvi, 2) Pradip Nemane
  * */
 
 public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecyclerViewAdapter.ViewHolder> {
-
-    ArrayList<Comment> comments = new ArrayList<>();
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    ArrayList<Comment> comments;
     Context context;
-    ForumFragment.ForumListener mListener;
     Forum forum;
 
-    public CommentRecyclerViewAdapter(Context context, ArrayList<Comment> comments, ForumFragment.ForumListener mListener, Forum forum) {
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+    public CommentRecyclerViewAdapter(Context context, ArrayList<Comment> comments, Forum forum) {
         this.comments = comments;
         this.context = context;
-        this.mListener = mListener;
         this.forum = forum;
     }
 

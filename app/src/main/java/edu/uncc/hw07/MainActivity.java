@@ -1,16 +1,21 @@
 package edu.uncc.hw07;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
-import android.util.Log;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 
 import edu.uncc.hw07.models.Forum;
 
-public class MainActivity extends AppCompatActivity implements LoginFragment.LoginListener, SignUpFragment.SignUpListener
-        , ForumsFragment.ForumsListener, CreateForumFragment.CreateForumListener, ForumFragment.ForumListener {
+/*
+ * Homework 07
+ * MainActivity.java
+ * Authors: 1) Sudhanshu Dalvi, 2) Pradip Nemane
+ * */
+
+public class MainActivity extends AppCompatActivity implements LoginFragment.LoginListener, SignUpFragment.SignUpListener,
+        ForumsFragment.ForumsListener, CreateForumFragment.CreateForumListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
     @Override
     public void login() {
-
+        getSupportFragmentManager().popBackStack();
     }
 
     @Override
@@ -76,8 +81,4 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         getSupportFragmentManager().popBackStack();
     }
 
-    @Override
-    public void gotoForumsFragment(Forum forum) {
-        
-    }
 }

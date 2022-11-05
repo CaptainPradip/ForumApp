@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -22,8 +21,15 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 
 import edu.uncc.hw07.databinding.FragmentSignUpBinding;
 
+/*
+ * Homework 07
+ * SignUpFragment.java
+ * Authors: 1) Sudhanshu Dalvi, 2) Pradip Nemane
+ * */
+
 public class SignUpFragment extends Fragment {
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
     public SignUpFragment() {
         // Required empty public constructor
     }

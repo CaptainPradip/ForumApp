@@ -22,21 +22,21 @@ import edu.uncc.hw07.MyAlertDialog;
 import edu.uncc.hw07.R;
 import edu.uncc.hw07.databinding.ForumRowItemBinding;
 import edu.uncc.hw07.models.Forum;
+
 /*
- * In Class 11
- * RecyclerViewAdapter.java
+ * Homework 07
+ * ForumRecyclerViewAdapter.java
  * Authors: 1) Sudhanshu Dalvi, 2) Pradip Nemane
  * */
 
 public class ForumRecyclerViewAdapter extends RecyclerView.Adapter<ForumRecyclerViewAdapter.ViewHolder> {
-
-    ArrayList<Forum> forums = new ArrayList<>();
-    ArrayList<String> likes = new ArrayList<>();
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    ArrayList<Forum> forums;
     Context context;
     ForumsFragment.ForumsListener mListener;
-     
+
+    ArrayList<String> likes = new ArrayList<>();
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public ForumRecyclerViewAdapter(Context context, ArrayList<Forum> forums, ForumsFragment.ForumsListener listener) {
         this.forums = forums;
@@ -68,6 +68,7 @@ public class ForumRecyclerViewAdapter extends RecyclerView.Adapter<ForumRecycler
         map.put("forumId", forum.getForumId());
         map.put("description", forum.getDescription());
         map.put("forumCreator", forum.getForumCreator());
+        map.put("forumCreatorId", forum.getForumCreatorId());
         map.put("dateTime", forum.getDateTime());
         map.put("likes", forum.getLikes());
         return map;
@@ -76,7 +77,6 @@ public class ForumRecyclerViewAdapter extends RecyclerView.Adapter<ForumRecycler
     class ViewHolder extends RecyclerView.ViewHolder {
         ForumRowItemBinding mBinding;
 
-
         public ViewHolder(ForumRowItemBinding binding, ForumsFragment.ForumsListener listener) {
             super(binding.getRoot());
             mBinding = binding;
@@ -84,7 +84,6 @@ public class ForumRecyclerViewAdapter extends RecyclerView.Adapter<ForumRecycler
         }
 
         void setupUI(Forum forum) {
-
             mBinding.textViewForumTitle.setText(forum.getTitle());
             mBinding.textViewForumCreatedBy.setText(forum.getForumCreator());
             mBinding.textViewForumText.setText(forum.getDescription());
@@ -97,38 +96,18 @@ public class ForumRecyclerViewAdapter extends RecyclerView.Adapter<ForumRecycler
                 mBinding.imageViewLike.setImageResource(R.drawable.like_not_favorite);
             }
 
-
             mBinding.imageViewLike.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    HashMap<String, Object> map = new HashMap<>();
                     likes = forum.getLikes();
 
                     //Check if current user has liked the forum
                     if (likes.contains(mAuth.getCurrentUser().getUid())) {
                         likes.remove(mAuth.getCurrentUser().getUid());
-                        forum.setLikes(likes);
-                        map = createMap(forum);
-                        db.collection("forum").document(forum.forumId)
-                                .set(map)
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+                        updateLikes(likes, forum);
                     } else {
                         likes.add(mAuth.getCurrentUser().getUid());
-                        forum.setLikes(likes);
-                        map = createMap(forum);
-                        db.collection("forum").document(forum.getForumId())
-                                .set(map)
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+                        updateLikes(likes, forum);
                     }
                 }
             });
@@ -140,9 +119,10 @@ public class ForumRecyclerViewAdapter extends RecyclerView.Adapter<ForumRecycler
                 }
             });
 
-
-            if (mAuth.getCurrentUser().getUid().equals(forum.getForumCreatorId())) {
-                //mBinding.imageViewDelete.setVisibility(View.VISIBLE);
+            if (!mAuth.getCurrentUser().getUid().equals(forum.getForumCreatorId())) {
+                mBinding.imageViewDelete.setVisibility(View.INVISIBLE);
+            } else {
+                mBinding.imageViewDelete.setVisibility(View.VISIBLE);
                 mBinding.imageViewDelete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -162,10 +142,22 @@ public class ForumRecyclerViewAdapter extends RecyclerView.Adapter<ForumRecycler
                                 });
                     }
                 });
-            } else {
-                mBinding.imageViewDelete.setVisibility(View.INVISIBLE);
             }
         }
+    }
+
+    public void updateLikes(ArrayList<String> likes, Forum forum) {
+        forum.setLikes(likes);
+        HashMap<String, Object> map = new HashMap<>();
+        map = createMap(forum);
+        db.collection("forum").document(forum.getForumId())
+                .set(map)
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
 }

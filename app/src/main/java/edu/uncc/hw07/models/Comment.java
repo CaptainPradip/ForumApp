@@ -1,5 +1,11 @@
 package edu.uncc.hw07.models;
 
+/*
+ * Homework 07
+ * Comment.java
+ * Authors: 1) Sudhanshu Dalvi, 2) Pradip Nemane
+ * */
+
 public class Comment {
     public String commentId;
     public String commentCreator;
@@ -53,7 +59,8 @@ public class Comment {
                 "commentId='" + commentId + '\'' +
                 ", commentCreator='" + commentCreator + '\'' +
                 ", comment='" + comment + '\'' +
-                ", dateTime=" + dateTime +
+                ", creatorId='" + creatorId + '\'' +
+                ", dateTime='" + dateTime + '\'' +
                 '}';
     }
 }

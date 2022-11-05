@@ -12,7 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -25,13 +25,18 @@ import edu.uncc.hw07.adaptors.ForumRecyclerViewAdapter;
 import edu.uncc.hw07.databinding.FragmentForumsBinding;
 import edu.uncc.hw07.models.Forum;
 
-public class ForumsFragment extends Fragment {
+/*
+ * Homework 07
+ * ForumsFragment.java
+ * Authors: 1) Sudhanshu Dalvi, 2) Pradip Nemane
+ * */
 
-    ArrayList<Forum> mForums = new ArrayList<>();
+public class ForumsFragment extends Fragment {
     ForumsListener mListener;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    ForumRecyclerViewAdapter adapter;
     FragmentForumsBinding binding;
+    ForumRecyclerViewAdapter adapter;
+    ArrayList<Forum> mForums = new ArrayList<>();
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public ForumsFragment() {
         // Required empty public constructor
@@ -40,7 +45,6 @@ public class ForumsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -60,7 +64,6 @@ public class ForumsFragment extends Fragment {
         adapter = new ForumRecyclerViewAdapter(getContext(), mForums, mListener);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerView.setAdapter(adapter);
-
 
         db.collection("forum")
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -85,6 +88,7 @@ public class ForumsFragment extends Fragment {
         binding.buttonLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
                 mListener.logout();
             }
         });
@@ -105,9 +109,7 @@ public class ForumsFragment extends Fragment {
 
     public interface ForumsListener {
         void logout();
-
         void gotoForumFragment(Forum forum);
-
         void createForum();
     }
 }
