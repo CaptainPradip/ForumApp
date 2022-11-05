@@ -1,12 +1,10 @@
 package edu.uncc.hw07.models;
 
-import java.time.LocalDateTime;
-
 public class Comment {
-    public  String commentId;
+    public String commentId;
     public String commentCreator;
-    public  String comment;
-    public LocalDateTime dateTime;
+    public String comment;
+    public String dateTime;
 
     public String getCommentId() {
         return commentId;
@@ -32,11 +30,11 @@ public class Comment {
         this.comment = comment;
     }
 
-    public LocalDateTime getDateTime() {
+    public String getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
+    public void setDateTime(String dateTime) {
         this.dateTime = dateTime;
     }
 

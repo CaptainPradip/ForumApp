@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,10 +15,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import edu.uncc.hw07.MyAlertDialog;
+import edu.uncc.hw07.R;
 import edu.uncc.hw07.databinding.CommentRowItemBinding;
 import edu.uncc.hw07.databinding.ForumRowItemBinding;
+import edu.uncc.hw07.models.Comment;
 import edu.uncc.hw07.models.Forum;
 /*
  * In Class 11
@@ -27,14 +31,23 @@ import edu.uncc.hw07.models.Forum;
 
 public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecyclerViewAdapter.ViewHolder> {
 
-    ArrayList<Forum> forums = new ArrayList<>();
+    ArrayList<Comment> comments = new ArrayList<>();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     Context context;
 
-    public CommentRecyclerViewAdapter(Context context, ArrayList<Forum> forums) {
-        this.forums = forums;
+    public CommentRecyclerViewAdapter(Context context, ArrayList<Comment> comments) {
+        this.comments = comments;
         this.context = context;
+    }
+
+    public HashMap<String, Object> createMap(Comment comment) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("comment", comment.getComment());
+        map.put("commentId", comment.getCommentId());
+        map.put("commentCreator", comment.getCommentCreator());
+        map.put("dateTime", comment.getDateTime());
+        return map;
     }
 
     @NonNull
@@ -46,13 +59,13 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecy
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Forum forum = forums.get(position);
-        holder.setupUI(forum);
+        Comment comment = comments.get(position);
+        holder.setupUI(comment);
     }
 
     @Override
     public int getItemCount() {
-        return forums.size();
+        return comments.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -63,14 +76,15 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecy
             mBinding = binding;
         }
 
-        void setupUI(Forum forum) {
+        void setupUI(Comment comment) {
 
-
+            mBinding.textViewCommentText.setText(comment.getComment());
+            mBinding.textViewCommentCreatedBy.setText(comment.getCommentCreator());
+            mBinding.textViewCommentCreatedAt.setText(comment.getDateTime());
             mBinding.imageViewDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    db.collection("users").document(mAuth.getCurrentUser().getUid())
-                            .collection("forums").document(forum.forumId)
+                    db.collection("comment").document(comment.getCommentId())
                             .delete()
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
@@ -81,7 +95,7 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecy
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                MyAlertDialog.show(context, "Error", e.getMessage());
+                                    MyAlertDialog.show(context, "Error", e.getMessage());
                                 }
                             });
                 }
