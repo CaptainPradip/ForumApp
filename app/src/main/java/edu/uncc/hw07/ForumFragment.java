@@ -93,20 +93,20 @@ public class ForumFragment extends Fragment {
         binding.textViewForumCreatedBy.setText(mForum.forumCreator);
         binding.textViewForumCreatedBy.setText(mForum.forumCreator);
 
-        db.collection("forum")
+        db.collection("forum").document(mForum.forumId).collection("comment")
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                         mComments.clear();
-//                        for (QueryDocumentSnapshot doc : value) {
-//                            Comment comment = new Comment();
-//                            comment.setComment(doc.getString("comment"));
-//                            comment.setCommentCreator(doc.getString("commentCreator"));
-//                            comment.setDateTime(doc.getString("dateTime"));
-//                            comment.setCommentId(doc.getString("commentId"));
-//                            mComments.add(comment);
-//                        }
-//                        //binding.textViewCommentsCount.setText(mComments.size());
+                        for (QueryDocumentSnapshot doc : value) {
+                            Comment comment = new Comment();
+                            comment.setComment(doc.getString("comment"));
+                            comment.setCommentCreator(doc.getString("commentCreator"));
+                            comment.setDateTime(doc.getString("dateTime"));
+                            comment.setCommentId(doc.getString("commentId"));
+                            mComments.add(comment);
+                        }
+                        binding.textViewCommentsCount.setText(mComments.size() + " Comments");
                         adapter.notifyDataSetChanged();
                     }
                 });
@@ -130,14 +130,14 @@ public class ForumFragment extends Fragment {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a");
                     String dateTime = localDateTime.format(formatter);
                     map.put("dateTime", dateTime);
-                    map.put("likes", new ArrayList<String>());
                     db.collection("forum").document(mForum.forumId)
+                            .collection("comment").document(commentId)
                             .set(map)
                             .addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        
+
                                         //mListener.closeCreateForumFragment();
                                     } else {
                                         MyAlertDialog.show(getContext(), "Error", task.getException().getMessage());
