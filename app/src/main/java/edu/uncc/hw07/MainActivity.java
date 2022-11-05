@@ -3,8 +3,11 @@ package edu.uncc.hw07;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
+
+import edu.uncc.hw07.models.Forum;
 
 public class MainActivity extends AppCompatActivity implements LoginFragment.LoginListener, SignUpFragment.SignUpListener
         , ForumsFragment.ForumsListener, CreateForumFragment.CreateForumListener {
@@ -49,6 +52,14 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     public void logout() {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.rootView, new LoginFragment())
+                .commit();
+    }
+
+    @Override
+    public void gotoForumFragment(Forum forum) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.rootView, new ForumFragment())
+                .addToBackStack(null)
                 .commit();
     }
 

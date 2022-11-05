@@ -57,7 +57,7 @@ public class ForumsFragment extends Fragment {
         getActivity().setTitle("Forums");
 
         binding.recyclerView.setHasFixedSize(true);
-        adapter = new ForumRecyclerViewAdapter(getContext(), mForums);
+        adapter = new ForumRecyclerViewAdapter(getContext(), mForums,mListener);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerView.setAdapter(adapter);
         
@@ -71,7 +71,7 @@ public class ForumsFragment extends Fragment {
                             Forum forum = new Forum();
                             forum.setForumId(doc.getString("forumId"));
                             forum.setForumCreator(doc.getString("forumCreator"));
-                            //forum.setDateTime(doc.getString("dateTime"));
+                            forum.setDateTime(doc.getString("dateTime"));
                             forum.setDescription(doc.getString("description"));
                             forum.setLikes((ArrayList<String>) doc.get("likes"));
                             forum.setTitle(doc.getString("title"));
@@ -102,9 +102,9 @@ public class ForumsFragment extends Fragment {
         mListener = (ForumsListener) context;
     }
 
-    interface ForumsListener {
+    public interface ForumsListener {
         void logout();
-
+      void  gotoForumFragment(Forum forum);
         void createForum();
     }
 }

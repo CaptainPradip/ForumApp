@@ -93,10 +93,8 @@ public class CreateForumFragment extends Fragment {
                     map.put("description", forumDesc);
                     map.put("forumCreator", mAuth.getCurrentUser().getDisplayName());
                     LocalDateTime localDateTime = LocalDateTime.now();
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a");
                     String dateTime = localDateTime.format(formatter);
-                    formatter = DateTimeFormatter.ofPattern("hh:mm a");
-                    dateTime += " at " + localDateTime.format(formatter);
                     map.put("dateTime", dateTime);
                     map.put("likes", new ArrayList<String>());
                     db.collection("forum").document(forumId)

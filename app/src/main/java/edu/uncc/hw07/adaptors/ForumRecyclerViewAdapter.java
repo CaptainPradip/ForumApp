@@ -17,6 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import edu.uncc.hw07.ForumsFragment;
 import edu.uncc.hw07.MyAlertDialog;
 import edu.uncc.hw07.R;
 import edu.uncc.hw07.databinding.ForumRowItemBinding;
@@ -34,18 +35,20 @@ public class ForumRecyclerViewAdapter extends RecyclerView.Adapter<ForumRecycler
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     Context context;
+    ForumsFragment.ForumsListener mListener;
      
 
-    public ForumRecyclerViewAdapter(Context context, ArrayList<Forum> forums) {
+    public ForumRecyclerViewAdapter(Context context, ArrayList<Forum> forums, ForumsFragment.ForumsListener listener) {
         this.forums = forums;
         this.context = context;
+        mListener = listener;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         ForumRowItemBinding binding = ForumRowItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
-        return new ViewHolder(binding);
+        return new ViewHolder(binding, mListener);
     }
 
     @Override
@@ -73,9 +76,11 @@ public class ForumRecyclerViewAdapter extends RecyclerView.Adapter<ForumRecycler
     class ViewHolder extends RecyclerView.ViewHolder {
         ForumRowItemBinding mBinding;
 
-        public ViewHolder(ForumRowItemBinding binding) {
+
+        public ViewHolder(ForumRowItemBinding binding, ForumsFragment.ForumsListener listener) {
             super(binding.getRoot());
             mBinding = binding;
+            mListener = listener;
         }
 
         void setupUI(Forum forum) {
@@ -150,7 +155,7 @@ public class ForumRecyclerViewAdapter extends RecyclerView.Adapter<ForumRecycler
             mBinding.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    mListener.gotoForumFragment(forum);
                 }
             });
         }
