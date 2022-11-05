@@ -71,6 +71,7 @@ public class ForumsFragment extends Fragment {
                             Forum forum = new Forum();
                             forum.setForumId(doc.getString("forumId"));
                             forum.setForumCreator(doc.getString("forumCreator"));
+                            forum.setForumCreatorId(doc.getString("forumCreatorId"));
                             forum.setDateTime(doc.getString("dateTime"));
                             forum.setDescription(doc.getString("description"));
                             forum.setLikes((ArrayList<String>) doc.get("likes"));

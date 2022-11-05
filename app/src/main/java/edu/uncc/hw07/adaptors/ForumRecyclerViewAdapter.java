@@ -97,25 +97,6 @@ public class ForumRecyclerViewAdapter extends RecyclerView.Adapter<ForumRecycler
                 mBinding.imageViewLike.setImageResource(R.drawable.like_not_favorite);
             }
 
-            mBinding.imageViewDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    db.collection("forum").document(forum.getForumId())
-                            .delete()
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    MyAlertDialog.show(context, "Error", e.getMessage());
-                                }
-                            });
-                }
-            });
 
             mBinding.imageViewLike.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -158,6 +139,32 @@ public class ForumRecyclerViewAdapter extends RecyclerView.Adapter<ForumRecycler
                     mListener.gotoForumFragment(forum);
                 }
             });
+
+
+            if (mAuth.getCurrentUser().getUid().equals(forum.getForumCreatorId())) {
+                //mBinding.imageViewDelete.setVisibility(View.VISIBLE);
+                mBinding.imageViewDelete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        db.collection("forum").document(forum.getForumId())
+                                .delete()
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        MyAlertDialog.show(context, "Error", e.getMessage());
+                                    }
+                                });
+                    }
+                });
+            } else {
+                mBinding.imageViewDelete.setVisibility(View.INVISIBLE);
+            }
         }
     }
 

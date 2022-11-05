@@ -38,11 +38,13 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecy
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     Context context;
     ForumFragment.ForumListener mListener;
+    Forum forum;
 
-    public CommentRecyclerViewAdapter(Context context, ArrayList<Comment> comments, ForumFragment.ForumListener mListener) {
+    public CommentRecyclerViewAdapter(Context context, ArrayList<Comment> comments, ForumFragment.ForumListener mListener, Forum forum) {
         this.comments = comments;
         this.context = context;
         this.mListener = mListener;
+        this.forum = forum;
     }
 
     public HashMap<String, Object> createMap(Comment comment) {
@@ -85,13 +87,15 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecy
             mBinding.textViewCommentText.setText(comment.getComment());
             mBinding.textViewCommentCreatedBy.setText(comment.getCommentCreator());
             mBinding.textViewCommentCreatedAt.setText(comment.getDateTime());
-            if (!comment.getCreatorId().equals(mAuth.getCurrentUser().getUid())) {
+            if (comment.creatorId == null || !comment.getCreatorId().equals(mAuth.getCurrentUser().getUid())) {
                 mBinding.imageViewDelete.setVisibility(View.INVISIBLE);
             } else {
+                mBinding.imageViewDelete.setVisibility(View.VISIBLE);
                 mBinding.imageViewDelete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        db.collection("comment").document(comment.getCommentId())
+                        db.collection("forum").document(forum.getForumId())
+                                .collection("comment").document(comment.getCommentId())
                                 .delete()
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override

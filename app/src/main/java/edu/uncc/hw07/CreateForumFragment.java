@@ -92,6 +92,7 @@ public class CreateForumFragment extends Fragment {
                     map.put("forumId", forumId);
                     map.put("description", forumDesc);
                     map.put("forumCreator", mAuth.getCurrentUser().getDisplayName());
+                    map.put("forumCreatorId", mAuth.getCurrentUser().getUid());
                     LocalDateTime localDateTime = LocalDateTime.now();
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a");
                     String dateTime = localDateTime.format(formatter);

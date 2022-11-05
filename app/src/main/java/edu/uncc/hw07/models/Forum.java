@@ -8,6 +8,7 @@ public class Forum implements Serializable {
     public String title;
     public String description;
     public String forumCreator;
+    public String forumCreatorId;
     public ArrayList<String> likes;
     public String dateTime;
     public String forumId;
@@ -60,12 +61,21 @@ public class Forum implements Serializable {
         this.forumId = forumId;
     }
 
+    public String getForumCreatorId() {
+        return forumCreatorId;
+    }
+
+    public void setForumCreatorId(String forumCreatorId) {
+        this.forumCreatorId = forumCreatorId;
+    }
+
     @Override
     public String toString() {
         return "Forum{" +
                 "title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", forumCreator='" + forumCreator + '\'' +
+                ", forumCreatorId='" + forumCreatorId + '\'' +
                 ", likes=" + likes +
                 ", dateTime='" + dateTime + '\'' +
                 ", forumId='" + forumId + '\'' +

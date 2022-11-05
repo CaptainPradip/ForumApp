@@ -85,7 +85,7 @@ public class ForumFragment extends Fragment {
         getActivity().setTitle("Forums");
 
         binding.recyclerView.setHasFixedSize(true);
-        adapter = new CommentRecyclerViewAdapter(getContext(), mComments, mListener);
+        adapter = new CommentRecyclerViewAdapter(getContext(), mComments, mListener, mForum);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerView.setAdapter(adapter);
         binding.textViewForumTitle.setText(mForum.title);
