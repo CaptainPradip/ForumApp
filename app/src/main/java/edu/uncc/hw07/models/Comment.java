@@ -4,6 +4,7 @@ public class Comment {
     public String commentId;
     public String commentCreator;
     public String comment;
+    public String creatorId;
     public String dateTime;
 
     public String getCommentId() {
@@ -12,6 +13,14 @@ public class Comment {
 
     public void setCommentId(String commentId) {
         this.commentId = commentId;
+    }
+
+    public String getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(String creatorId) {
+        this.creatorId = creatorId;
     }
 
     public String getCommentCreator() {

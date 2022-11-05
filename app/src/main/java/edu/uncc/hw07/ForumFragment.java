@@ -103,6 +103,7 @@ public class ForumFragment extends Fragment {
                             comment.setComment(doc.getString("comment"));
                             comment.setCommentCreator(doc.getString("commentCreator"));
                             comment.setDateTime(doc.getString("dateTime"));
+                            comment.setCreatorId(doc.getString("creatorId"));
                             comment.setCommentId(doc.getString("commentId"));
                             mComments.add(comment);
                         }
@@ -125,6 +126,7 @@ public class ForumFragment extends Fragment {
                     String commentId = UUID.randomUUID().toString();
                     map.put("commentId", commentId);
                     map.put("comment", comment);
+                    map.put("creatorId", mAuth.getCurrentUser().getUid());
                     map.put("commentCreator", mAuth.getCurrentUser().getDisplayName());
                     LocalDateTime localDateTime = LocalDateTime.now();
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a");

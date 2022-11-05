@@ -51,6 +51,7 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecy
         map.put("commentId", comment.getCommentId());
         map.put("commentCreator", comment.getCommentCreator());
         map.put("dateTime", comment.getDateTime());
+        map.put("creatorId", comment.getCreatorId());
         return map;
     }
 
@@ -84,25 +85,29 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecy
             mBinding.textViewCommentText.setText(comment.getComment());
             mBinding.textViewCommentCreatedBy.setText(comment.getCommentCreator());
             mBinding.textViewCommentCreatedAt.setText(comment.getDateTime());
-            mBinding.imageViewDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    db.collection("comment").document(comment.getCommentId())
-                            .delete()
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
+            if (!comment.getCreatorId().equals(mAuth.getCurrentUser().getUid())) {
+                mBinding.imageViewDelete.setVisibility(View.INVISIBLE);
+            } else {
+                mBinding.imageViewDelete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        db.collection("comment").document(comment.getCommentId())
+                                .delete()
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
 
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    MyAlertDialog.show(context, "Error", e.getMessage());
-                                }
-                            });
-                }
-            });
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        MyAlertDialog.show(context, "Error", e.getMessage());
+                                    }
+                                });
+                    }
+                });
+            }
         }
     }
 }
