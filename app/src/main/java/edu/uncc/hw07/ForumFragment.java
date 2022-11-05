@@ -1,12 +1,41 @@
 package edu.uncc.hw07;
 
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.UUID;
+
+import edu.uncc.hw07.adaptors.CommentRecyclerViewAdapter;
+import edu.uncc.hw07.adaptors.ForumRecyclerViewAdapter;
+import edu.uncc.hw07.databinding.FragmentForumBinding;
+import edu.uncc.hw07.databinding.FragmentForumsBinding;
+import edu.uncc.hw07.models.Comment;
+import edu.uncc.hw07.models.Forum;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,31 +46,27 @@ public class ForumFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_PARAM = "ARG_PARAM";
 
+    ArrayList<Comment> mComments = new ArrayList<>();
+    ForumListener mListener;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    CommentRecyclerViewAdapter adapter;
+    FragmentForumBinding binding;
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private Forum mForum;
 
     public ForumFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ForumFragment.
-     */
+
     // TODO: Rename and change types and number of parameters
-    public static ForumFragment newInstance(String param1, String param2) {
+    public static ForumFragment newInstance(Forum forum) {
         ForumFragment fragment = new ForumFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putSerializable(ARG_PARAM, forum);
         fragment.setArguments(args);
         return fragment;
     }
@@ -50,15 +75,96 @@ public class ForumFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mForum = (Forum) getArguments().getSerializable(ARG_PARAM);
         }
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        getActivity().setTitle("Forums");
+
+        binding.recyclerView.setHasFixedSize(true);
+        adapter = new CommentRecyclerViewAdapter(getContext(), mComments, mListener);
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.recyclerView.setAdapter(adapter);
+        binding.textViewForumTitle.setText(mForum.title);
+        binding.textViewForumText.setText(mForum.description);
+        binding.textViewForumCreatedBy.setText(mForum.forumCreator);
+        binding.textViewForumCreatedBy.setText(mForum.forumCreator);
+
+        db.collection("forum")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        mComments.clear();
+//                        for (QueryDocumentSnapshot doc : value) {
+//                            Comment comment = new Comment();
+//                            comment.setComment(doc.getString("comment"));
+//                            comment.setCommentCreator(doc.getString("commentCreator"));
+//                            comment.setDateTime(doc.getString("dateTime"));
+//                            comment.setCommentId(doc.getString("commentId"));
+//                            mComments.add(comment);
+//                        }
+//                        //binding.textViewCommentsCount.setText(mComments.size());
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+
+        binding.buttonSubmitComment.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(View view) {
+                String comment = binding.editTextComment.getText().toString();
+
+                if (comment.isEmpty()) {
+                    MyAlertDialog.show(getContext(), "Error", "Please enter all the fields");
+                } else {
+
+                    HashMap<String, Object> map = new HashMap<>();
+                    String commentId = UUID.randomUUID().toString();
+                    map.put("commentId", commentId);
+                    map.put("comment", comment);
+                    map.put("commentCreator", mAuth.getCurrentUser().getDisplayName());
+                    LocalDateTime localDateTime = LocalDateTime.now();
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a");
+                    String dateTime = localDateTime.format(formatter);
+                    map.put("dateTime", dateTime);
+                    map.put("likes", new ArrayList<String>());
+                    db.collection("forum").document(mForum.forumId)
+                            .set(map)
+                            .addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        
+                                        //mListener.closeCreateForumFragment();
+                                    } else {
+                                        MyAlertDialog.show(getContext(), "Error", task.getException().getMessage());
+                                    }
+                                }
+                            });
+                }
+            }
+        });
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_forum, container, false);
+        binding = FragmentForumBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mListener = (ForumListener) context;
+    }
+
+    public interface ForumListener {
+        void gotoForumsFragment(Forum forum);
     }
 }

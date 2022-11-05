@@ -57,10 +57,10 @@ public class ForumsFragment extends Fragment {
         getActivity().setTitle("Forums");
 
         binding.recyclerView.setHasFixedSize(true);
-        adapter = new ForumRecyclerViewAdapter(getContext(), mForums,mListener);
+        adapter = new ForumRecyclerViewAdapter(getContext(), mForums, mListener);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerView.setAdapter(adapter);
-        
+
 
         db.collection("forum")
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -104,7 +104,9 @@ public class ForumsFragment extends Fragment {
 
     public interface ForumsListener {
         void logout();
-      void  gotoForumFragment(Forum forum);
+
+        void gotoForumFragment(Forum forum);
+
         void createForum();
     }
 }

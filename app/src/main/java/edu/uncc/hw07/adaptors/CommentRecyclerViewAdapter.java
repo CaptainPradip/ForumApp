@@ -17,6 +17,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import edu.uncc.hw07.ForumFragment;
+import edu.uncc.hw07.ForumsFragment;
 import edu.uncc.hw07.MyAlertDialog;
 import edu.uncc.hw07.R;
 import edu.uncc.hw07.databinding.CommentRowItemBinding;
@@ -35,10 +37,12 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecy
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     Context context;
+    ForumFragment.ForumListener mListener;
 
-    public CommentRecyclerViewAdapter(Context context, ArrayList<Comment> comments) {
+    public CommentRecyclerViewAdapter(Context context, ArrayList<Comment> comments, ForumFragment.ForumListener mListener) {
         this.comments = comments;
         this.context = context;
+        this.mListener = mListener;
     }
 
     public HashMap<String, Object> createMap(Comment comment) {
@@ -77,7 +81,6 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecy
         }
 
         void setupUI(Comment comment) {
-
             mBinding.textViewCommentText.setText(comment.getComment());
             mBinding.textViewCommentCreatedBy.setText(comment.getCommentCreator());
             mBinding.textViewCommentCreatedAt.setText(comment.getDateTime());

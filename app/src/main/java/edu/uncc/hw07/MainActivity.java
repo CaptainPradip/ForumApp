@@ -10,7 +10,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import edu.uncc.hw07.models.Forum;
 
 public class MainActivity extends AppCompatActivity implements LoginFragment.LoginListener, SignUpFragment.SignUpListener
-        , ForumsFragment.ForumsListener, CreateForumFragment.CreateForumListener {
+        , ForumsFragment.ForumsListener, CreateForumFragment.CreateForumListener, ForumFragment.ForumListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     @Override
     public void gotoForumFragment(Forum forum) {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.rootView, new ForumFragment())
+                .replace(R.id.rootView, ForumFragment.newInstance(forum))
                 .addToBackStack(null)
                 .commit();
     }
@@ -74,5 +74,10 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     @Override
     public void closeCreateForumFragment() {
         getSupportFragmentManager().popBackStack();
+    }
+
+    @Override
+    public void gotoForumsFragment(Forum forum) {
+        
     }
 }
