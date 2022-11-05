@@ -24,9 +24,6 @@ import edu.uncc.hw07.databinding.FragmentSignUpBinding;
 
 public class SignUpFragment extends Fragment {
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FragmentSignUpBinding binding;
-    SignUpListener mListener;
-
     public SignUpFragment() {
         // Required empty public constructor
     }
@@ -35,6 +32,8 @@ public class SignUpFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
+
+    FragmentSignUpBinding binding;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,11 +60,11 @@ public class SignUpFragment extends Fragment {
                 String email = binding.editTextEmail.getText().toString();
                 String password = binding.editTextPassword.getText().toString();
 
-                if (name.isEmpty()) {
+                if(name.isEmpty()){
                     MyAlertDialog.show(getContext(), "Error", "Enter valid name!");
-                } else if (email.isEmpty()) {
+                } else if(email.isEmpty()){
                     MyAlertDialog.show(getContext(), "Error", "Enter valid email!");
-                } else if (password.isEmpty()) {
+                } else if (password.isEmpty()){
                     MyAlertDialog.show(getContext(), "Error", "Enter valid password!");
                 } else {
                     mAuth.createUserWithEmailAndPassword(email, password)
@@ -100,6 +99,8 @@ public class SignUpFragment extends Fragment {
 
     }
 
+    SignUpListener mListener;
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -108,7 +109,6 @@ public class SignUpFragment extends Fragment {
 
     interface SignUpListener {
         void login();
-
         void gotoForumsFragment();
     }
 }

@@ -1,34 +1,19 @@
 package edu.uncc.hw07.models;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-public class Forum {
-    public String  title;
-    public  String description;
+public class Forum implements Serializable {
+    public String title;
+    public String description;
     public String forumCreator;
     public ArrayList<String> likes;
-    public LocalDateTime dateTime;
+    public String dateTime;
     public String forumId;
 
     public String getTitle() {
         return title;
-    }
-
-    public String getForumId() {
-        return forumId;
-    }
-
-    public String getForumCreator() {
-        return forumCreator;
-    }
-
-    public void setForumCreator(String forumCreator) {
-        this.forumCreator = forumCreator;
-    }
-
-    public void setForumId(String forumId) {
-        this.forumId = forumId;
     }
 
     public void setTitle(String title) {
@@ -43,6 +28,14 @@ public class Forum {
         this.description = description;
     }
 
+    public String getForumCreator() {
+        return forumCreator;
+    }
+
+    public void setForumCreator(String forumCreator) {
+        this.forumCreator = forumCreator;
+    }
+
     public ArrayList<String> getLikes() {
         return likes;
     }
@@ -51,12 +44,20 @@ public class Forum {
         this.likes = likes;
     }
 
-    public LocalDateTime getDateTime() {
+    public String getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
+    public void setDateTime(String dateTime) {
         this.dateTime = dateTime;
+    }
+
+    public String getForumId() {
+        return forumId;
+    }
+
+    public void setForumId(String forumId) {
+        this.forumId = forumId;
     }
 
     @Override
@@ -66,7 +67,7 @@ public class Forum {
                 ", description='" + description + '\'' +
                 ", forumCreator='" + forumCreator + '\'' +
                 ", likes=" + likes +
-                ", dateTime=" + dateTime +
+                ", dateTime='" + dateTime + '\'' +
                 ", forumId='" + forumId + '\'' +
                 '}';
     }

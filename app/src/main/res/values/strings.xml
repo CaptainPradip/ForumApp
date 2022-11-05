@@ -9,10 +9,10 @@
     <string name="logout_label">Logout</string>
     <string name="enter_post_label">Enter Post</string>
     <string name="create_forum">New Forum</string>
-    <string name="forum_title_hint">Forum Title</string>
-    <string name="forum_desc_hint">Forum Description</string>
     <string name="posts_label">Posts</string>
     <string name="create_account_label">Create New Account</string>
+    <string name="forum_title_hint">Forum Title</string>
+    <string name="forum_desc_hint">Forum Description</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

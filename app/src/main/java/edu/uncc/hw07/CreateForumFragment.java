@@ -78,8 +78,7 @@ public class CreateForumFragment extends Fragment {
         binding.buttonCreateForum.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
-            public void onClick(View v) {
-
+            public void onClick(View view) {
                 String forumTitle = binding.editTextTitle.getText().toString();
                 String forumDesc = binding.editTextDesc.getText().toString();
 
@@ -93,12 +92,12 @@ public class CreateForumFragment extends Fragment {
                     map.put("forumId", forumId);
                     map.put("description", forumDesc);
                     map.put("forumCreator", mAuth.getCurrentUser().getDisplayName());
-//                    LocalDateTime localDateTime = LocalDateTime.now();
-//                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-//                    String dateTime = localDateTime.format(formatter);
-//                    formatter = DateTimeFormatter.ofPattern("hh:mm a");
-//                    dateTime += " at " + localDateTime.format(formatter);
-                    map.put("dateTime", LocalDateTime.now());
+                    LocalDateTime localDateTime = LocalDateTime.now();
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+                    String dateTime = localDateTime.format(formatter);
+                    formatter = DateTimeFormatter.ofPattern("hh:mm a");
+                    dateTime += " at " + localDateTime.format(formatter);
+                    map.put("dateTime", dateTime);
                     map.put("likes", new ArrayList<String>());
                     db.collection("forum").document(forumId)
                             .set(map)
